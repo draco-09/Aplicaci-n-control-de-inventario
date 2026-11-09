@@ -92,4 +92,36 @@ La interfaz visual del sistema respeta estrictamente los códigos de diseño aco
    python app.py
    ```
 5. **Acceder desde el navegador:**
-   Abrir Google Chrome e ingresar a la URL: `http://127.0.0`
+   Abrir Google Chrome e ingresar a la URL: `http://127.0.0.1:5000`.
+
+### Backend de usuarios
+
+El backend expone rutas JSON para autenticación y administración de usuarios. El archivo `data/usuarios.json` se crea automáticamente si no existe. En una instalación nueva, crea el primer administrador con `POST /usuarios`; ese alta inicial es la única operación de usuarios permitida sin sesión. Después, solo un administrador autenticado puede gestionar usuarios.
+
+Para restablecer el archivo local con un único administrador inicial, ejecuta `python app.py --init-admin`. Este comando reemplaza `data/usuarios.json` atómicamente y crea `admin@supermercado.com` con la contraseña inicial `admin123`; úsala solo para inicializar o restablecer datos de desarrollo. Después, ejecuta `python app.py` para iniciar el servidor.
+
+Como alternativa, para crear el primer administrador desde la aplicación sin borrar datos, envía JSON con los campos `correo`, `contrasena` y `rol`:
+
+```json
+{
+  "correo": "admin@supermercado.com",
+  "contrasena": "cambia-esta-contrasena",
+  "rol": "Administrador"
+}
+```
+
+La contraseña se guarda con hash. Se aceptan los roles `Administrador`, `Encargado` y `Vendedor` (sin distinguir mayúsculas/minúsculas). Los usuarios existentes con contraseñas en texto plano se convierten a hash al iniciar sesión correctamente.
+
+| Método | Ruta | Acceso | Función |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/login` | Público | Inicia sesión con `correo` y `contrasena`. |
+| `POST` | `/logout` | Público | Cierra la sesión actual. |
+| `GET` | `/usuarios` | Administrador | Lista los usuarios. |
+| `POST` | `/usuarios` | Administrador (excepto alta inicial) | Crea un usuario. |
+| `GET` | `/usuarios/<id>` | Administrador | Consulta un usuario. |
+| `PUT`, `PATCH` | `/usuarios/<id>` | Administrador | Actualiza correo, contraseña, rol o estado `activo`. |
+| `DELETE` | `/usuarios/<id>` | Administrador | Elimina un usuario. |
+
+Las rutas de sesión aceptan y devuelven JSON; el navegador conserva la sesión mediante una cookie. Todas las respuestas de usuario omiten la contraseña. La aplicación impide desactivar, degradar o eliminar al último administrador activo.
+
+Define `FLASK_SECRET_KEY` con un valor secreto estable antes de ejecutar el servidor si necesitas conservar sesiones entre reinicios. En desarrollo local, si no se define, se genera una clave aleatoria al iniciar la aplicación.

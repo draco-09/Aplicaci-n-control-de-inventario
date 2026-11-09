@@ -1,0 +1,9 @@
+[
+  {
+    "activo": true,
+    "contrasena": "scrypt:32768:8:1$Z5jQUS8YSaZB6Re5$ae9ecd051b11fe52eebbf3a1a646cddadc3b05904f1145432630d0b590223dd3bdca6a010eb6fe88fc64e0363f71f0ebafdd2ec80eecf2d8474f77ca6bf13535",
+    "correo": "admin@supermercado.com",
+    "id": 1,
+    "rol": "Administrador"
+  }
+]
