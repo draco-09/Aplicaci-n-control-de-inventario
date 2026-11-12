@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block titulo_pagina %}Alertas de inventario{% endblock %}
+{% block pagina %}alertas{% endblock %}
+{% block titulo %}Alertas de inventario{% endblock %}
+{% block subtitulo %}Lotes vencidos, próximos a vencer y productos en existencia mínima.{% endblock %}
+{% block contenido %}
+  <section class="card">
+    {% if alertas %}
+    <div class="tabla-wrap"><table>
+      <thead><tr><th>Tipo</th><th>Producto</th><th>Lote</th><th class="num">Cantidad</th><th>Vencimiento</th><th>Acciones</th></tr></thead>
+      <tbody>{% for a in alertas %}
+        <tr><td><span class="badge {{ 'crit' if a.nivel == 'critico' else 'adv' }}">{{ a.tipo }}</span></td><td>{{ a.producto }}</td><td>{{ a.lote }}</td><td class="num">{{ a.cantidad }}</td><td>{{ a.fecha|fecha or '—' }}</td>
+          <td><button class="btn-link" data-accion="detalle-alerta" data-json='{{ a|tojson }}'>Ver detalle</button></td></tr>
+      {% endfor %}</tbody>
+    </table></div>
+    {% else %}<p class="vacio">No existen alertas vigentes.</p>{% endif %}
+  </section>
+  <div class="banner info">Las alertas informan situaciones que requieren atención; no retiran productos ni modifican cantidades.</div>
+{% endblock %}

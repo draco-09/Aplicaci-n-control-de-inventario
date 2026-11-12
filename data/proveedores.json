@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "tipo_id": "NIT",
+    "numero_id": "900123456-9",
+    "nombre": "Distribuidora Norte",
+    "telefono": "6075551234",
+    "correo": "ventas@dnorte.co",
+    "direccion": "",
+    "activo": true
+  },
+  {
+    "id": 2,
+    "tipo_id": "NIT",
+    "numero_id": "901234567-8",
+    "nombre": "Comercializadora Central",
+    "telefono": "6075559876",
+    "correo": "",
+    "direccion": "Av. 5 # 10-20",
+    "activo": true
+  },
+  {
+    "id": 3,
+    "tipo_id": "NIT",
+    "numero_id": "900345678-1",
+    "nombre": "Suministros del Hogar",
+    "telefono": "",
+    "correo": "info@suhogar.co",
+    "direccion": "",
+    "activo": true
+  }
+]

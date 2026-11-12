@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block titulo_pagina %}Entradas de productos{% endblock %}
+{% block pagina %}entradas{% endblock %}
+{% block titulo %}Entradas de productos{% endblock %}
+{% block subtitulo %}Consulta las recepciones confirmadas y registra nuevos ingresos.{% endblock %}
+{% block acciones %}<a class="btn btn-pri" href="{{ url_for('vistas.entrada_nueva') }}">+ Nueva entrada</a>{% endblock %}
+{% block contenido %}
+  <section class="card">
+    <div class="filtros">
+      <div class="campo grande"><label for="fe-q">Buscar entrada</label><input id="fe-q" type="search" placeholder="Número, proveedor o documento"></div>
+      <div class="campo"><label for="fe-desde">Desde</label><input id="fe-desde" type="date"></div>
+      <div class="campo"><label for="fe-hasta">Hasta</label><input id="fe-hasta" type="date"></div>
+    </div>
+    <div class="tabla-wrap"><table>
+      <thead><tr><th>Entrada</th><th>Fecha</th><th>Proveedor</th><th>Documento</th><th class="num">Total compra</th><th>Acciones</th></tr></thead>
+      <tbody id="filas-entradas">
+      {% for e in entradas %}
+        <tr data-q="{{ (e.codigo ~ ' ' ~ nombres[e.proveedor_id] ~ ' ' ~ e.documento)|lower }}" data-fecha="{{ e.fecha }}">
+          <td>{{ e.codigo }}</td><td>{{ e.fecha|fecha }}</td><td>{{ nombres[e.proveedor_id] }}</td><td>{{ e.documento }}</td>
+          <td class="num">{{ e.total|moneda }}</td><td><a class="btn-link" href="{{ url_for('vistas.entrada_detalle', codigo=e.codigo) }}">Ver detalle</a></td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table></div>
+    <p class="pie-tabla" id="pie-entradas"></p>
+  </section>
+  <div class="banner info">Las cantidades se incorporan al inventario únicamente después de confirmar la entrada.</div>
+{% endblock %}

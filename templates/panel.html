@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block titulo_pagina %}Panel principal{% endblock %}
+{% block pagina %}panel{% endblock %}
+{% block titulo %}Panel principal{% endblock %}
+{% block subtitulo %}Bienvenido, {{ nombre_usuario }}.{% endblock %}
+{% block acciones %}<span class="rol-chip">{{ rol }}</span>{% endblock %}
+{% block contenido %}
+  {% if denegado %}<div class="banner crit" role="alert">No tienes permisos para entrar a esa sección.</div>{% else %}
+  <div class="banner info">Sesión iniciada. Las opciones con candado no están disponibles para tu rol.</div>{% endif %}
+  <h2>Accesos disponibles</h2>
+  <div class="accesos">
+    {% for m in accesos %}
+    <article class="card acceso">
+      <span class="icono">{{ icono(m[3]) }}</span>
+      <div><h3>{{ m[1] }}</h3><p class="sub">{{ m[5] }}</p></div>
+      <a class="btn btn-sec" href="{{ url_for(m[2]) }}">{{ m[6] }}</a>
+    </article>
+    {% endfor %}
+  </div>
+  {% if rol == 'Vendedor' %}<div class="banner info">Para registrar una venta, selecciona productos y revisa las cantidades disponibles.</div>{% endif %}
+{% endblock %}

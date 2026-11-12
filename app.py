@@ -102,14 +102,21 @@ def _current_user():
     if user_id is None:
         return None
     with _usuarios_lock:
-        return next(
+        user = next(
             (
-                user
-                for user in _read_users()
-                if user.get("id") == user_id and user.get("activo") is True
+                item
+                for item in _read_users()
+                if item.get("id") == user_id and item.get("activo") is True
             ),
             None,
         )
+    if user is None or session.get("rol") != _normalize_role(user.get("rol")):
+        return None  # cuenta desactivada o rol cambiado: la sesión se invalida
+    return user
+
+
+def _texto(value):
+    return value.strip() if isinstance(value, str) else ""
 
 
 def _json_body():
@@ -148,6 +155,7 @@ def login():
     if not isinstance(email, str) or not isinstance(password, str):
         return _error("Debes proporcionar correo y contraseña.", 400)
 
+    incorrectas = "Correo o contraseña incorrectos."
     with _usuarios_lock:
         users = _read_users()
         user = next(
@@ -159,25 +167,27 @@ def login():
             ),
             None,
         )
-        if user is None or user.get("activo") is not True:
-            return _error("Credenciales inválidas o cuenta inactiva.", 401)
+        stored_password = user.get("contrasena") if user else None
+        if user is None or not isinstance(stored_password, str):
+            return _error(incorrectas, 401)
 
-        stored_password = user.get("contrasena")
-        if not isinstance(stored_password, str):
-            return _error("Credenciales inválidas o cuenta inactiva.", 401)
         if stored_password.startswith(("scrypt:", "pbkdf2:")):
             password_matches = check_password_hash(stored_password, password)
         else:
-            password_matches = hmac.compare_digest(stored_password, password)
-            if password_matches:
+            password_matches = hmac.compare_digest(stored_password.encode(), password.encode())
+            if password_matches and user.get("activo") is True:
                 user["contrasena"] = generate_password_hash(password)
                 _write_users(users)
 
         if not password_matches:
-            return _error("Credenciales inválidas o cuenta inactiva.", 401)
+            return _error(incorrectas, 401)
+        # Solo se revela que la cuenta está inactiva si la contraseña es correcta.
+        if user.get("activo") is not True:
+            return _error("Cuenta inactiva. Contacta al administrador.", 403)
 
         session.clear()
         session["user_id"] = user["id"]
+        session["rol"] = _normalize_role(user.get("rol"))
         return jsonify(usuario=_public_user(user)), 200
 
 
@@ -243,6 +253,8 @@ def usuarios():
             "contrasena": generate_password_hash(password),
             "rol": role,
             "activo": True,
+            "nombre": _texto(body.get("nombre")),
+            "apellido": _texto(body.get("apellido")),
         }
         users.append(new_user)
         _write_users(users)
@@ -291,6 +303,11 @@ def usuario_detalle(user_id):
             if not isinstance(password, str) or not password:
                 return _error("La contraseña no puede estar vacía.", 400)
             updated["contrasena"] = generate_password_hash(password)
+        for campo in ("nombre", "apellido"):
+            if campo in body:
+                if not isinstance(body[campo], str):
+                    return _error(f"El campo {campo} debe ser texto.", 400)
+                updated[campo] = body[campo].strip()
         if "rol" in body:
             role = _normalize_role(body["rol"])
             if role is None:
@@ -323,6 +340,12 @@ def usuario_detalle(user_id):
         users[user_index] = updated
         _write_users(users)
         return jsonify(usuario=_public_user(updated)), 200
+
+
+# Vistas HTML (MPA) y API de catálogos: ver vistas.py
+from vistas import registrar_vistas  # noqa: E402
+
+registrar_vistas(app, _current_user, _normalize_role)
 
 
 if __name__ == "__main__":

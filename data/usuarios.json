@@ -1,9 +1,27 @@
 [
   {
     "activo": true,
-    "contrasena": "scrypt:32768:8:1$Z5jQUS8YSaZB6Re5$ae9ecd051b11fe52eebbf3a1a646cddadc3b05904f1145432630d0b590223dd3bdca6a010eb6fe88fc64e0363f71f0ebafdd2ec80eecf2d8474f77ca6bf13535",
+    "contrasena": "scrypt:32768:8:1$s9QItqKgHYmlhrWY$24a37a314aa4b51d4476273f27e330bdf3191ab5da347b377e2f39f436a01828b5a1b1d8c4b5b1a25ac3f1b8e35d045d9adef02bddf4712fe51ade0e1d45bdfb",
     "correo": "admin@supermercado.com",
     "id": 1,
     "rol": "Administrador"
+  },
+  {
+    "activo": true,
+    "apellido": "Nuncira Martinez",
+    "contrasena": "scrypt:32768:8:1$cwwkAwRt6sZFXDTa$1790667812407c25d725d9523298339bb08e0a947ebf64d94786ed6606be6d40460137310f1517a718098f8f17345fb596686274d021e8984ab3af16427503eb",
+    "correo": "nunciraanderson7@gmail.com",
+    "id": 2,
+    "nombre": "Anderson Duvian",
+    "rol": "Vendedor"
+  },
+  {
+    "activo": true,
+    "apellido": "gay",
+    "contrasena": "scrypt:32768:8:1$XwBmjK4C6tTipe1t$10346c3f466cbab090bcee3246197214026cd51ae2c463b19c831f1b6651643321c5afff4145b5fdff4f9a3c4489f329b988aabf11cd1951aabc29c516f1680b",
+    "correo": "negrogay69@soygay.com",
+    "id": 3,
+    "nombre": "negro",
+    "rol": "Encargado"
   }
 ]

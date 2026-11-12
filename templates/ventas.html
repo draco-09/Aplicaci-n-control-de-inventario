@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block titulo_pagina %}Ventas{% endblock %}
+{% block pagina %}ventas{% endblock %}
+{% block titulo %}Ventas{% endblock %}
+{% block subtitulo %}Registra los productos vendidos; el sistema asigna los lotes que vencen primero.{% endblock %}
+{% block contenido %}
+  <section class="card">
+    <div class="card-cabecera"><h2>Nueva venta</h2></div>
+    <div class="fila-3" style="grid-template-columns:2fr 1fr auto;align-items:end">
+      <div class="campo"><label for="v-prod">Producto</label>
+        <select id="v-prod">{% for p in productos %}<option value="{{ p.codigo }}">{{ p.codigo }} · {{ p.nombre }} {{ p.presentacion }} — {{ p.disponibles }} disp.</option>{% endfor %}</select></div>
+      <div class="campo"><label for="v-cant">Cantidad</label><input id="v-cant" type="number" min="1" step="1" value="1"><span class="err"></span></div>
+      <button class="btn btn-sec" type="button" id="v-agregar" {% if not productos %}disabled{% endif %}>+ Agregar</button>
+    </div>
+    {% if not productos %}<p class="sub" style="margin-top:10px">No hay productos con existencias disponibles para vender.</p>{% endif %}
+  </section>
+  <section class="card">
+    <div class="tabla-wrap"><table>
+      <thead><tr><th>Producto</th><th class="num">Cantidad</th><th class="num">Precio unitario</th><th class="num">Subtotal</th><th>Acciones</th></tr></thead>
+      <tbody id="v-lineas"></tbody>
+    </table></div>
+    <p class="total-compra">Total estimado <b id="v-total">$ 0</b></p>
+    <div class="acciones-pie" style="margin-top:12px"><button class="btn btn-sec" type="button" id="v-limpiar">Limpiar</button><button class="btn btn-pri" type="button" id="v-revisar">Revisar venta</button></div>
+  </section>
+  <section class="card">
+    <div class="card-cabecera"><h2>Ventas registradas</h2></div>
+    <div class="tabla-wrap"><table>
+      <thead><tr><th>Venta</th><th>Fecha</th><th>Vendedor</th><th class="num">Total</th><th>Acciones</th></tr></thead>
+      <tbody>
+      {% for v in ventas %}
+        <tr><td>{{ v.codigo }}</td><td>{{ v.fecha|fecha }}</td><td>{{ v.usuario.split('@')[0].replace('.', ' ').title() }}</td><td class="num">{{ v.total|moneda }}</td>
+          <td><button class="btn-link" data-accion="detalle-venta" data-json='{{ v|tojson }}'>Ver detalle</button></td></tr>
+      {% else %}<tr><td colspan="5" class="vacio">Aún no hay ventas registradas.</td></tr>{% endfor %}
+      </tbody>
+    </table></div>
+  </section>
+  <div class="banner info">Al revisar la venta verás los lotes asignados; las existencias solo se descuentan al confirmar.</div>
+{% endblock %}
+{% block scripts %}<script>window.VENTA = { productos: {{ productos|tojson }} };</script>{% endblock %}

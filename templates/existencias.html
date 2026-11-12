@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block titulo_pagina %}Existencias{% endblock %}
+{% block pagina %}existencias{% endblock %}
+{% block titulo %}Existencias{% endblock %}
+{% block subtitulo %}Consulta los saldos registrados y las cantidades disponibles para venta.{% endblock %}
+{% block contenido %}
+  <section class="card">
+    <div class="filtros">
+      <div class="campo grande"><label for="fx-q">Buscar producto</label><input id="fx-q" type="search" placeholder="Buscar por código o nombre"></div>
+    </div>
+    <div class="tabla-wrap"><table>
+      <thead><tr><th>Código</th><th>Producto</th><th>Unidad</th><th class="num">Registradas</th><th class="num">Disponibles para venta</th><th>Detalle</th></tr></thead>
+      <tbody id="filas-existencias">
+      {% for p in productos %}
+        <tr data-q="{{ (p.codigo ~ ' ' ~ p.nombre)|lower }}">
+          <td>{{ p.codigo }}</td><td>{{ p.nombre }} {% if not p.activo %}<span class="badge off">Inactivo</span>{% endif %}</td><td>{{ p.unidad }}</td>
+          <td class="num">{{ p.registradas }}</td><td class="num">{{ p.disponibles }}</td>
+          <td>{% if p.lotes %}<button class="btn-link" data-accion="lotes" aria-expanded="false">Ver lotes</button>{% else %}<span class="sub">Sin lotes</span>{% endif %}</td>
+        </tr>
+        {% if p.lotes %}
+        <tr class="lotes-fila" hidden><td colspan="6">
+          <table><thead><tr><th>Lote</th><th>Vencimiento</th><th class="num">Cantidad</th><th>Estado</th></tr></thead><tbody>
+          {% for l in p.lotes %}<tr><td>{{ l.id_lote }}</td><td>{{ l.fecha_vencimiento|fecha if l.fecha_vencimiento else 'No aplica' }}</td><td class="num">{{ l.cantidad }}</td>
+            <td>{% if l.fecha_vencimiento and l.fecha_vencimiento <= hoy %}<span class="badge crit">Vencido</span>{% else %}<span class="badge ok">Vendible</span>{% endif %}</td></tr>{% endfor %}
+          </tbody></table>
+        </td></tr>
+        {% endif %}
+      {% endfor %}
+      </tbody>
+    </table></div>
+    <p class="pie-tabla" id="pie-existencias"></p>
+  </section>
+  <div class="banner info">Las unidades vencidas y las de productos inactivos no cuentan como disponibles para venta.</div>
+{% endblock %}

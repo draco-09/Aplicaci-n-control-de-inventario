@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block titulo_pagina %}Productos y categorías{% endblock %}
+{% block pagina %}productos{% endblock %}
+{% block titulo %}Productos y categorías{% endblock %}
+{% block subtitulo %}Registra y mantén el catálogo de productos y sus categorías.{% endblock %}
+{% block acciones %}
+  <button class="btn btn-sec" type="button" id="btn-nueva-cat">Nueva categoría</button>
+  <button class="btn btn-pri" type="button" id="btn-nuevo-prod">+ Nuevo producto</button>
+{% endblock %}
+{% block contenido %}
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" aria-selected="true" data-tab="productos">Productos</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="categorias">Categorías</button>
+  </div>
+
+  <section class="card" id="tab-productos">
+    <div class="filtros">
+      <div class="campo grande"><label for="fp-q">Buscar producto</label><input id="fp-q" type="search" placeholder="Buscar por código o nombre"></div>
+      <div class="campo"><label for="fp-cat">Categoría</label><select id="fp-cat"><option value="">Todas</option>{% for c in categorias %}<option>{{ c.nombre }}</option>{% endfor %}</select></div>
+      <div class="campo"><label for="fp-est">Estado</label><select id="fp-est"><option value="">Todos</option><option value="1">Activo</option><option value="0">Inactivo</option></select></div>
+    </div>
+    <div class="tabla-wrap"><table>
+      <thead><tr><th>Código</th><th>Producto</th><th>Categoría</th><th>Unidad</th><th class="num">Precio venta</th><th class="num">Mínimo</th><th>Vencimiento</th><th>Estado</th><th>Acciones</th></tr></thead>
+      <tbody id="filas-productos">
+      {% for p in productos %}
+        <tr data-q="{{ (p.codigo ~ ' ' ~ p.nombre)|lower }}" data-cat="{{ p.categoria }}" data-est="{{ 1 if p.activo else 0 }}" data-json='{{ p|tojson }}'>
+          <td>{{ p.codigo }}</td><td>{{ p.nombre }}</td><td>{{ p.categoria }}</td><td>{{ p.unidad }}</td>
+          <td class="num">{{ p.precio|moneda }}</td><td class="num">{{ p.minimo }}</td><td>{{ 'Controla' if p.vencimiento else 'No' }}</td>
+          <td><span class="badge {{ 'ok' if p.activo else 'off' }}">{{ 'Activo' if p.activo else 'Inactivo' }}</span></td>
+          <td><button class="btn-link" data-accion="editar-prod">Editar</button><button class="btn-link" data-accion="estado-prod">{{ 'Desactivar' if p.activo else 'Activar' }}</button></td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table></div>
+    <p class="pie-tabla" id="pie-productos"></p>
+  </section>
+
+  <section class="card" id="tab-categorias" hidden>
+    <div class="filtros">
+      <div class="campo grande"><label for="fc-q">Buscar categoría</label><input id="fc-q" type="search" placeholder="Buscar por nombre"></div>
+      <div class="campo"><label for="fc-est">Estado</label><select id="fc-est"><option value="">Todos</option><option value="1">Activo</option><option value="0">Inactivo</option></select></div>
+    </div>
+    <div class="tabla-wrap"><table>
+      <thead><tr><th>Categoría</th><th>Descripción</th><th>Estado</th><th>Acciones</th></tr></thead>
+      <tbody id="filas-categorias">
+      {% for c in categorias %}
+        <tr data-q="{{ c.nombre|lower }}" data-est="{{ 1 if c.activo else 0 }}" data-json='{{ c|tojson }}'>
+          <td>{{ c.nombre }}</td><td>{{ c.descripcion }}</td>
+          <td><span class="badge {{ 'ok' if c.activo else 'off' }}">{{ 'Activo' if c.activo else 'Inactivo' }}</span></td>
+          <td><button class="btn-link" data-accion="editar-cat">Editar</button><button class="btn-link" data-accion="estado-cat">{{ 'Desactivar' if c.activo else 'Activar' }}</button></td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table></div>
+    <p class="pie-tabla" id="pie-categorias"></p>
+  </section>
+  <div class="banner info">Registrar o editar un producto no modifica sus existencias. Las cantidades se actualizan mediante movimientos.</div>
+{% endblock %}
+{% block overlays %}
+<div class="overlay" id="drawer-producto" hidden>
+  <aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="p-titulo">
+    <form id="form-producto" novalidate>
+      <header><h2 id="p-titulo">Nuevo producto</h2><p class="sub" id="p-sub">Completa los datos antes de registrar el producto.</p><button type="button" class="cerrar" data-cerrar aria-label="Cerrar">×</button></header>
+      <div class="cuerpo">
+        <div class="fila-2">
+          <div class="campo"><label for="p-codigo">Código *</label><input id="p-codigo" name="codigo" placeholder="Código único" required><span class="err"></span></div>
+          <div class="campo"><label for="p-nombre">Nombre *</label><input id="p-nombre" name="nombre" placeholder="Nombre del producto" required><span class="err"></span></div>
+        </div>
+        <div class="campo"><label for="p-desc">Descripción</label><input id="p-desc" name="descripcion" placeholder="Descripción del producto"></div>
+        <div class="fila-2">
+          <div class="campo"><label for="p-cat">Categoría *</label><select id="p-cat" name="categoria"><option value="">Seleccionar categoría</option>{% for c in categorias if c.activo %}<option>{{ c.nombre }}</option>{% endfor %}</select><span class="err"></span></div>
+          <div class="campo"><label for="p-pres">Presentación *</label><input id="p-pres" name="presentacion" placeholder="Ej.: bolsa de 500 g" required><span class="err"></span></div>
+        </div>
+        <div class="fila-2">
+          <div class="campo"><label for="p-unidad">Unidad de medida *</label><select id="p-unidad" name="unidad"><option>Unidad</option><option>Kilogramo</option><option>Gramo</option><option>Litro</option><option>Mililitro</option></select></div>
+          <div class="campo"><label for="p-precio">Precio de venta *</label><input id="p-precio" name="precio" type="number" min="0" step="50" placeholder="$ 0" required><span class="err"></span></div>
+        </div>
+        <div class="fila-2">
+          <div class="campo"><label for="p-min">Existencia mínima *</label><input id="p-min" name="minimo" type="number" min="0" step="1" value="0" required><span class="err"></span></div>
+          <div class="campo"><label for="p-venc">Control de vencimiento *</label><select id="p-venc" name="vencimiento"><option value="">Seleccionar</option><option value="true">Sí</option><option value="false">No</option></select><span class="err"></span></div>
+        </div>
+        <div class="banner info" id="p-nota">El producto se registra activo. Sus existencias iniciales son cero.</div>
+        <div class="banner adv" id="p-bloqueo" hidden>Unidad y control de vencimiento bloqueados: existen movimientos.</div>
+        <div class="banner crit" id="p-error" role="alert" hidden></div>
+        <span class="ayuda">* Campos obligatorios</span>
+      </div>
+      <footer><button type="button" class="btn btn-sec" data-cerrar>Cancelar</button><button type="submit" class="btn btn-pri" id="p-guardar">Registrar producto</button></footer>
+    </form>
+  </aside>
+</div>
+<div class="overlay" id="drawer-categoria" hidden>
+  <aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="c-titulo">
+    <form id="form-categoria" novalidate>
+      <header><h2 id="c-titulo">Nueva categoría</h2><p class="sub">Organiza los productos mediante categorías.</p><button type="button" class="cerrar" data-cerrar aria-label="Cerrar">×</button></header>
+      <div class="cuerpo">
+        <div class="campo"><label for="c-nombre">Nombre *</label><input id="c-nombre" name="nombre" placeholder="Nombre de la categoría" required><span class="err"></span></div>
+        <div class="campo"><label for="c-desc">Descripción</label><input id="c-desc" name="descripcion" placeholder="Descripción de la categoría"></div>
+        <div class="banner info" id="c-nota">La categoría se registrará activa y podrá asignarse a productos.</div>
+        <div class="banner crit" id="c-error" role="alert" hidden></div>
+        <span class="ayuda">* Campos obligatorios</span>
+      </div>
+      <footer><button type="button" class="btn btn-sec" data-cerrar>Cancelar</button><button type="submit" class="btn btn-pri" id="c-guardar">Registrar categoría</button></footer>
+    </form>
+  </aside>
+</div>
+{% endblock %}

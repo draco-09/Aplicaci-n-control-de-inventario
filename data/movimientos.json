@@ -1,0 +1,59 @@
+[
+  {
+    "codigo": "ENT-00012",
+    "fecha": "2026-10-23",
+    "proveedor_id": 1,
+    "documento": "FAC-1039",
+    "total": 38400,
+    "usuario": "Laura Gómez",
+    "observacion": "",
+    "detalle": [
+      {
+        "producto": "Leche entera 1 L",
+        "lote": "LAC-231023-01",
+        "vencimiento": "2026-11-20",
+        "cantidad": 12,
+        "costo": 3200,
+        "subtotal": 38400
+      }
+    ]
+  },
+  {
+    "codigo": "ENT-00011",
+    "fecha": "2026-10-20",
+    "proveedor_id": 2,
+    "documento": "REM-282",
+    "total": 96000,
+    "usuario": "Laura Gómez",
+    "observacion": "",
+    "detalle": [
+      {
+        "producto": "Arroz 500 g",
+        "lote": "ABA-190926-01",
+        "vencimiento": null,
+        "cantidad": 40,
+        "costo": 2400,
+        "subtotal": 96000
+      }
+    ]
+  },
+  {
+    "codigo": "ENT-00010",
+    "fecha": "2026-10-17",
+    "proveedor_id": 3,
+    "documento": "FAC-774",
+    "total": 125000,
+    "usuario": "Laura Gómez",
+    "observacion": "",
+    "detalle": [
+      {
+        "producto": "Detergente",
+        "lote": "ASE-171026-01",
+        "vencimiento": null,
+        "cantidad": 25,
+        "costo": 5000,
+        "subtotal": 125000
+      }
+    ]
+  }
+]

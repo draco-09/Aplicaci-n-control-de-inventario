@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Iniciar sesión · Gestión de inventario</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+</head>
+<body class="login" data-pagina="login">
+  <aside class="login-lado">
+    <span class="logo">{{ icono('productos') }}</span>
+    <h1>Gestión de inventario</h1>
+    <p>Control claro y ordenado</p>
+    <span class="deco">{{ icono('cubos') }}</span>
+  </aside>
+  <section class="login-zona">
+    <form class="login-card" id="form-login" novalidate>
+      <div><h2>Iniciar sesión</h2><p class="sub">Ingresa con tu correo electrónico y contraseña para acceder al sistema.</p></div>
+      <div class="campo"><label for="correo">Correo electrónico</label>
+        <input id="correo" name="correo" type="email" autocomplete="username" placeholder="nombre@correo.com" required autofocus></div>
+      <div class="campo"><label for="contrasena">Contraseña</label>
+        <div class="pass-wrap"><input id="contrasena" name="contrasena" type="password" autocomplete="current-password" required>
+          <button type="button" data-ver-pass aria-label="Mostrar u ocultar contraseña">{{ icono('eye') }}</button></div></div>
+      <div class="banner crit" id="login-error" role="alert" hidden></div>
+      <button class="btn btn-pri" type="submit" id="login-btn">Iniciar sesión</button>
+      <div class="pie">¿No tienes cuenta o no puedes ingresar?<br>Contacta al administrador del sistema.</div>
+    </form>
+  </section>
+  <script src="{{ url_for('static', filename='js/validaciones.js') }}"></script>
+</body>
+</html>

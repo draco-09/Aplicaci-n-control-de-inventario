@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block titulo_pagina %}Nueva entrada{% endblock %}
+{% block pagina %}entradas{% endblock %}
+{% block titulo %}Nueva entrada de productos{% endblock %}
+{% block subtitulo %}Completa la recepción y revisa los lotes antes de confirmar.{% endblock %}
+{% block contenido %}
+  <section class="card">
+    <div class="fila-3">
+      <div class="campo"><label for="e-prov-txt">Proveedor *</label>
+        <input id="e-prov-txt" readonly placeholder="Seleccionar proveedor" style="cursor:pointer" aria-haspopup="dialog"><span class="err"></span></div>
+      <div class="campo"><label for="e-fecha">Fecha de recepción</label><input id="e-fecha" type="date" value="{{ hoy }}" disabled></div>
+      <div class="campo"><label for="e-doc">Documento de referencia</label><input id="e-doc" placeholder="Ej.: FAC-1048"></div>
+    </div>
+    <div class="campo" style="margin-top:14px"><label for="e-obs">Observación</label><input id="e-obs" placeholder="Recepción de productos según factura del proveedor."></div>
+  </section>
+  <section class="card">
+    <div class="card-cabecera"><h2>Productos recibidos</h2><button class="btn btn-sec" type="button" id="btn-agregar">+ Agregar producto</button></div>
+    <div class="tabla-wrap"><table>
+      <thead><tr><th>Producto</th><th>Lote</th><th>Vencimiento</th><th class="num">Cantidad</th><th class="num">Costo unitario</th><th class="num">Subtotal</th><th>Acciones</th></tr></thead>
+      <tbody id="lineas"></tbody>
+    </table></div>
+    <p class="pie-tabla" id="resumen-lineas"></p>
+    <p class="total-compra">Total de compra <b id="total-compra">$ 0</b></p>
+  </section>
+  <div class="banner info">Entrada sin confirmar. Los saldos actuales todavía no han cambiado.</div>
+  <div class="acciones-pie"><button class="btn btn-sec" type="button" id="btn-cancelar">Cancelar</button><button class="btn btn-pri" type="button" id="btn-revisar">Revisar entrada</button></div>
+{% endblock %}
+{% block overlays %}
+<div class="overlay" id="drawer-proveedor-sel" hidden>
+  <aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="sp-titulo">
+    <header><h2 id="sp-titulo">Seleccionar proveedor</h2><p class="sub">Solo se muestran proveedores activos.</p><button type="button" class="cerrar" data-cerrar aria-label="Cerrar">×</button></header>
+    <div class="cuerpo">
+      <div class="campo"><label for="sp-q">Buscar proveedor</label><input id="sp-q" type="search" placeholder="Buscar por identificación o nombre"></div>
+      <div id="sp-lista" style="display:flex;flex-direction:column;gap:10px"></div>
+      <div class="banner info">Si no existe, regístralo primero en el módulo Proveedores.</div>
+    </div>
+    <footer><button type="button" class="btn btn-sec" data-cerrar>Volver</button></footer>
+  </aside>
+</div>
+<div class="overlay" id="drawer-linea" hidden>
+  <aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="l-titulo">
+    <form id="form-linea" novalidate>
+      <header><h2 id="l-titulo">Agregar producto y lote</h2><p class="sub">Define la cantidad recibida y su costo de compra.</p><button type="button" class="cerrar" data-cerrar aria-label="Cerrar">×</button></header>
+      <div class="cuerpo">
+        <div class="campo"><label for="l-prod">Producto *</label><select id="l-prod"></select><span class="err"></span></div>
+        <div class="campo"><label for="l-lote">Número de lote</label><input id="l-lote" placeholder="Ej.: LAC-231026-01 (opcional)"><span class="ayuda">Si el proveedor no identifica el lote, se asignará un número interno.</span><span class="err"></span></div>
+        <div class="fila-2">
+          <div class="campo"><label for="l-venc">Fecha de vencimiento *</label><input id="l-venc" type="date"><span class="err"></span></div>
+          <div class="campo"><label for="l-cant">Cantidad recibida *</label><input id="l-cant" type="number" min="1" step="1"><span class="ayuda" id="l-unidad"></span><span class="err"></span></div>
+        </div>
+        <div class="fila-2">
+          <div class="campo"><label for="l-costo">Costo unitario de compra *</label><input id="l-costo" type="number" min="0" step="50" placeholder="$ 0"><span class="err"></span></div>
+          <div class="campo"><label for="l-sub">Subtotal calculado</label><input id="l-sub" disabled value="$ 0"></div>
+        </div>
+        <div class="banner info" id="l-info" hidden></div>
+        <div class="banner crit" id="l-error" role="alert" hidden></div>
+        <span class="ayuda">* Campos obligatorios</span>
+      </div>
+      <footer><button type="button" class="btn btn-sec" data-cerrar>Cancelar</button><button type="submit" class="btn btn-pri" id="l-guardar">Agregar a la entrada</button></footer>
+    </form>
+  </aside>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>window.ENTRADA = { proveedores: {{ proveedores|tojson }}, productos: {{ productos|tojson }}, hoy: "{{ hoy }}", urlEntradas: "{{ url_for('vistas.entradas') }}" };</script>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block titulo_pagina %}Entrada {{ e.codigo }}{% endblock %}
+{% block pagina %}entradas{% endblock %}
+{% block titulo %}Entrada {{ e.codigo }}{% endblock %}
+{% block subtitulo %}Recepción registrada el {{ e.fecha|fecha }}{% if e.usuario %} por {{ e.usuario.split('@')[0].replace('.', ' ').title() if '@' in e.usuario else e.usuario }}{% endif %}.{% endblock %}
+{% block acciones %}<span class="badge ok">Confirmada</span>{% endblock %}
+{% block contenido %}
+  <section class="card">
+    <div class="fila-3">
+      <div class="campo"><span class="sub">Proveedor</span><strong>{{ proveedor }}</strong></div>
+      <div class="campo"><span class="sub">Documento de referencia</span><strong>{{ e.documento }}</strong></div>
+      <div class="campo"><span class="sub">Fecha de recepción</span><strong>{{ e.fecha|fecha }}</strong></div>
+    </div>
+    {% if e.observacion %}<div class="campo" style="margin-top:12px"><span class="sub">Observación</span><span>{{ e.observacion }}</span></div>{% endif %}
+  </section>
+  <section class="card">
+    <h2 style="margin-bottom:12px">Detalle recibido</h2>
+    <div class="tabla-wrap"><table>
+      <thead><tr><th>Producto</th><th>Lote</th><th>Vencimiento</th><th class="num">Cantidad</th><th class="num">Costo unitario</th><th class="num">Subtotal</th></tr></thead>
+      <tbody>{% for d in e.detalle %}
+        <tr><td>{{ d.producto }}</td><td>{{ d.lote }}</td><td>{{ d.vencimiento|fecha if d.vencimiento else 'No aplica' }}</td><td class="num">{{ d.cantidad }} unidades</td><td class="num">{{ d.costo|moneda }}</td><td class="num">{{ d.subtotal|moneda }}</td></tr>
+      {% endfor %}</tbody>
+    </table></div>
+    <p class="total-compra">Total de compra <b>{{ e.total|moneda }}</b></p>
+  </section>
+  <div class="banner ok">Entrada confirmada. Este detalle es de consulta; no permite editar ni volver a registrar la recepción.</div>
+  <div class="acciones-pie"><a class="btn btn-pri" href="{{ url_for('vistas.entradas') }}">Volver a entradas</a></div>
+{% endblock %}

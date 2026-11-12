@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo_pagina %}{% endblock %} · Gestión de inventario</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+</head>
+<body class="app" data-pagina="{% block pagina %}{% endblock %}">
+  <aside class="sidebar">
+    <div class="marca"><span class="logo">{{ icono('productos') }}</span><span>Gestión de<br>inventario</span></div>
+    <nav aria-label="Principal">
+      {% for m in menu %}
+        {% if m.permitido %}
+          <a class="nav-item {{ 'activo' if m.clave == self.pagina()|trim }}" href="{{ m.url }}" {% if m.clave == self.pagina()|trim %}aria-current="page"{% endif %}>{{ icono(m.icono) }}<span>{{ m.titulo }}</span></a>
+        {% else %}
+          <span class="nav-item bloqueado" aria-disabled="true" title="No disponible para tu rol">{{ icono(m.icono) }}<span>{{ m.titulo }}</span><span class="candado">{{ icono('lock') }}</span></span>
+        {% endif %}
+      {% endfor %}
+    </nav>
+    <div class="usuario-pie">
+      <strong>{{ nombre_usuario }}</strong><span>{{ rol_etiqueta }}</span>
+      <button class="btn-salir" type="button" data-logout>{{ icono('logout') }} Cerrar sesión</button>
+    </div>
+  </aside>
+  <main>
+    <header class="page-head">
+      <div><h1>{% block titulo %}{% endblock %}</h1><p class="sub">{% block subtitulo %}{% endblock %}</p></div>
+      <div class="head-actions">{% block acciones %}{% endblock %}</div>
+    </header>
+    {% block contenido %}{% endblock %}
+  </main>
+  {% block overlays %}{% endblock %}
+  {% block scripts %}{% endblock %}
+  <script src="{{ url_for('static', filename='js/validaciones.js') }}"></script>
+</body>
+</html>

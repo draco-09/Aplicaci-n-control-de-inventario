@@ -20,9 +20,10 @@ Aplicación-control-de-inventario/
 │
 ├── data/                   # Capa de persistencia (Base de Datos Local JSON)
 │   ├── usuarios.json       # Credenciales, roles y estados de cuenta
-│   ├── productos.json      # Catálogo de artículos y existencias mínimas
+│   ├── inventario.json     # Productos con sus lotes (esquema del ACUERDO_MVP §7)
+│   ├── categorias.json     # Categorías de productos
 │   ├── proveedores.json    # Registro y contacto de proveedores activos
-│   └── movimientos.json    # Historial unificado de Entradas, Ventas y Alertas
+│   └── movimientos.json    # Historial unificado de Entradas (ENT-) y Ventas (VEN-)
 │
 ├── static/                 # Recursos estáticos de la interfaz web
 │   ├── css/
@@ -125,3 +126,16 @@ La contraseña se guarda con hash. Se aceptan los roles `Administrador`, `Encarg
 Las rutas de sesión aceptan y devuelven JSON; el navegador conserva la sesión mediante una cookie. Todas las respuestas de usuario omiten la contraseña. La aplicación impide desactivar, degradar o eliminar al último administrador activo.
 
 Define `FLASK_SECRET_KEY` con un valor secreto estable antes de ejecutar el servidor si necesitas conservar sesiones entre reinicios. En desarrollo local, si no se define, se genera una clave aleatoria al iniciar la aplicación.
+
+### Front-end (vistas MPA)
+
+Pantallas según los mockups del DERS (CU-01 a CU-04) más proveedores, existencias, alertas y ventas (CU-08). `vistas.py` registra las páginas y las rutas `/api/...`; los datos se guardan en `data/` (`categorias.json`, `inventario.json`, `proveedores.json`, `movimientos.json`), que **se crean solos con datos de ejemplo la primera vez** (borra un archivo para volver a sus datos de ejemplo).
+
+Para probar: `python app.py --init-admin`, luego `python app.py` y entrar en `http://127.0.0.1:5000` con `admin@supermercado.com` / `admin123`. Desde *Usuarios y roles* crea un Encargado y un Vendedor para ver cada menú.
+
+**Reglas implementadas**
+* Login: `401` "Correo o contraseña incorrectos." y `403` "Cuenta inactiva. Contacta al administrador." (solo se revela si la contraseña es correcta).
+* La sesión guarda el rol: si el administrador cambia el rol o desactiva la cuenta, la sesión abierta deja de ser válida en la siguiente petición.
+* Usuarios guardan `nombre` y `apellido` (opcionales).
+* Entradas: el lote es opcional; si falta, se asigna uno interno `INT-<código>-<aammdd>-<n>`. No se aceptan lotes vencidos ni un lote existente con otra fecha de vencimiento.
+* Ventas (`POST /api/ventas/revisar` y `POST /api/ventas`): lotes por FEFO (vence primero, sale primero); sin vencimiento, por orden de ingreso (FIFO). Al confirmar se revalida disponibilidad y precios y se descuenta en `inventario.json`.

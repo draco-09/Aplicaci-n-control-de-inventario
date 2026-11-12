@@ -1,0 +1,70 @@
+[
+  {
+    "codigo_unico": "ASE-001",
+    "nombre": "Detergente",
+    "descripcion": "Detergente en polvo",
+    "categoria": "Aseo",
+    "presentacion": "Bolsa de 1 kg",
+    "unidad": "Unidad",
+    "precio": 8500,
+    "vencimiento": false,
+    "activo": true,
+    "lotes": [],
+    "existencia_minima": 18,
+    "proveedor_id": null
+  },
+  {
+    "codigo_unico": "LAC-014",
+    "nombre": "Leche entera",
+    "descripcion": "Leche entera pasteurizada",
+    "categoria": "Lácteos",
+    "presentacion": "Envase de 1 L",
+    "unidad": "Unidad",
+    "precio": 4200,
+    "vencimiento": true,
+    "activo": true,
+    "lotes": [
+      {
+        "id_lote": "LAC-231026-01",
+        "cantidad": 12,
+        "fecha_vencimiento": "2026-11-16"
+      }
+    ],
+    "existencia_minima": 24,
+    "proveedor_id": null
+  },
+  {
+    "codigo_unico": "ABA-032",
+    "nombre": "Arroz 500 g",
+    "descripcion": "Arroz blanco",
+    "categoria": "Abarrotes",
+    "presentacion": "Bolsa de 500 g",
+    "unidad": "Unidad",
+    "precio": 3100,
+    "vencimiento": false,
+    "activo": true,
+    "lotes": [
+      {
+        "id_lote": "ABA-190926-01",
+        "cantidad": 40,
+        "fecha_vencimiento": null
+      }
+    ],
+    "existencia_minima": 30,
+    "proveedor_id": null
+  },
+  {
+    "codigo_unico": "ASE-007",
+    "nombre": "Jabón de baño",
+    "descripcion": "",
+    "categoria": "Aseo",
+    "presentacion": "Barra de 100 g",
+    "unidad": "Unidad",
+    "precio": 2500,
+    "vencimiento": false,
+    "activo": false,
+    "lotes": [],
+    "existencia_minima": 20,
+    "proveedor_id": null
+  }
+]

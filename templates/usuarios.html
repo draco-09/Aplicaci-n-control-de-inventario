@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block titulo_pagina %}Usuarios y roles{% endblock %}
+{% block pagina %}usuarios{% endblock %}
+{% block titulo %}Usuarios y roles{% endblock %}
+{% block subtitulo %}Administra las cuentas y sus permisos de acceso al sistema.{% endblock %}
+{% block acciones %}<button class="btn btn-pri" type="button" id="btn-nuevo-usuario">+ Nuevo usuario</button>{% endblock %}
+{% block contenido %}
+  <div class="stats">
+    <div class="card stat"><b id="st-total">–</b><span>Usuarios registrados</span></div>
+    <div class="card stat"><b id="st-activos">–</b><span>Cuentas activas</span></div>
+    <div class="card stat"><b>3</b><span>Roles disponibles</span></div>
+  </div>
+  <section class="card">
+    <div class="filtros">
+      <div class="campo grande"><label for="f-q">Buscar usuario</label><input id="f-q" type="search" placeholder="Buscar por nombre o correo"></div>
+      <div class="campo"><label for="f-rol">Rol</label><select id="f-rol"><option value="">Todos</option><option>Administrador</option><option>Encargado</option><option>Vendedor</option></select></div>
+      <div class="campo"><label for="f-estado">Estado</label><select id="f-estado"><option value="">Todos</option><option value="1">Activo</option><option value="0">Inactivo</option></select></div>
+    </div>
+    <div class="tabla-wrap"><table>
+      <thead><tr><th>Usuario</th><th>Correo electrónico</th><th>Rol</th><th>Estado</th><th>Acciones</th></tr></thead>
+      <tbody id="tabla-usuarios"><tr><td colspan="5" class="vacio">Cargando usuarios…</td></tr></tbody>
+    </table></div>
+    <p class="pie-tabla" id="pie-usuarios"></p>
+  </section>
+  <div class="banner info">Cada usuario tiene un único rol. Los roles y permisos están predefinidos.</div>
+{% endblock %}
+{% block overlays %}
+<div class="overlay" id="drawer-usuario" hidden>
+  <aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="u-titulo">
+    <form id="form-usuario" novalidate>
+      <header><h2 id="u-titulo">Nuevo usuario</h2><p class="sub" id="u-sub">Crea una cuenta y asigna su rol de acceso.</p><button type="button" class="cerrar" data-cerrar aria-label="Cerrar">×</button></header>
+      <div class="cuerpo">
+        <div class="fila-2">
+          <div class="campo"><label for="u-nombre">Nombre *</label><input id="u-nombre" name="nombre" placeholder="Nombre" required><span class="err"></span></div>
+          <div class="campo"><label for="u-apellido">Apellido *</label><input id="u-apellido" name="apellido" placeholder="Apellido" required><span class="err"></span></div>
+        </div>
+        <div class="campo"><label for="u-correo">Correo electrónico *</label><input id="u-correo" name="correo" type="email" placeholder="nombre@correo.com" required><span class="err"></span></div>
+        <div class="campo" data-solo="nuevo"><label for="u-pass">Contraseña inicial *</label><input id="u-pass" name="contrasena" type="password" placeholder="Ingresar contraseña" autocomplete="new-password"><span class="ayuda">El administrador entrega las credenciales al usuario.</span><span class="err"></span></div>
+        <div class="campo" data-solo="nuevo"><label for="u-rol">Rol *</label><select id="u-rol" name="rol"><option value="">Seleccionar rol</option><option value="Administrador">Administrador</option><option value="Encargado">Encargado de inventario</option><option value="Vendedor">Vendedor</option></select><span class="err"></span></div>
+        <div class="campo" data-solo="nuevo"><label for="u-estado">Estado inicial</label><select id="u-estado" name="activo"><option value="true">Activo</option><option value="false">Inactivo</option></select></div>
+        <div class="campo" data-solo="editar" hidden><label for="u-rol-actual">Rol actual</label><input id="u-rol-actual" disabled></div>
+        <div data-solo="editar" hidden><button type="button" class="btn btn-sec" id="btn-cambiar-rol">Cambiar rol</button></div>
+        <div class="banner info" data-solo="editar" hidden>Los cambios conservan el historial de sus operaciones.</div>
+        <div class="banner crit" id="u-error" role="alert" hidden></div>
+        <span class="ayuda">* Campos obligatorios</span>
+      </div>
+      <footer><button type="button" class="btn btn-sec" data-cerrar>Cancelar</button><button type="submit" class="btn btn-pri" id="u-guardar">Registrar usuario</button></footer>
+    </form>
+  </aside>
+</div>
+{% endblock %}

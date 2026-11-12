@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "nombre": "Aseo",
+    "descripcion": "Productos para limpieza del hogar",
+    "activo": true
+  },
+  {
+    "id": 2,
+    "nombre": "Lácteos",
+    "descripcion": "Leche y productos derivados",
+    "activo": true
+  },
+  {
+    "id": 3,
+    "nombre": "Abarrotes",
+    "descripcion": "Alimentos básicos y productos secos",
+    "activo": true
+  },
+  {
+    "id": 4,
+    "nombre": "Bebidas",
+    "descripcion": "Bebidas envasadas",
+    "activo": false
+  }
+]
