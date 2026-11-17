@@ -17,11 +17,20 @@
   },
   {
     "activo": true,
-    "apellido": "gay",
-    "contrasena": "scrypt:32768:8:1$XwBmjK4C6tTipe1t$10346c3f466cbab090bcee3246197214026cd51ae2c463b19c831f1b6651643321c5afff4145b5fdff4f9a3c4489f329b988aabf11cd1951aabc29c516f1680b",
-    "correo": "negrogay69@soygay.com",
+    "apellido": "alfonso",
+    "contrasena": "scrypt:32768:8:1$c7D0DDUdTCrnBIvL$0b4f68446fffaa5a6a06b8db7243d67de31adb2d090970406cd1c71cda02c404653d855f8c4369c1bc5f9844012caaead37db068abd5d786de97c28fb29bc437",
+    "correo": "encargado@supermercado.com",
     "id": 3,
-    "nombre": "negro",
+    "nombre": "elkin",
     "rol": "Encargado"
+  },
+  {
+    "activo": true,
+    "apellido": "Herrera",
+    "contrasena": "scrypt:32768:8:1$oVEWT82t3dAg6Jb9$7928ec248c420a6c3e8dc85c3b05b6cc117604647d945e8a884516995156fbf243144a6f2d3391584f82e315e3ea97a8a9cfeb58c911f424b76f0206ef220bdd",
+    "correo": "vendedor@supermercado.com",
+    "id": 4,
+    "nombre": "carlos",
+    "rol": "Vendedor"
   }
 ]

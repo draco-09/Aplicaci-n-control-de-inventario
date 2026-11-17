@@ -2,11 +2,10 @@
 
 Se registra desde app.py con `registrar_vistas(app, _current_user, _normalize_role)`.
 
-IMPORTANTE para el equipo Back-end:
-  Los datos de CATEGORIAS, PRODUCTOS, PROVEEDORES y ENTRADAS viven en memoria
-  (se pierden al reiniciar) para que el front sea demostrable hoy. Cada función
-  marcada con `# TODO(persistencia)` debe reemplazarse por lectura/escritura de
-  data/*.json. Las plantillas y el JS no cambian: solo consumen estas rutas.
+Persistencia en JSON:
+  Los datos de CATEGORIAS, PRODUCTOS, PROVEEDORES y ENTRADAS (movimientos)
+  se almacenan y sincronizan en archivos data/*.json. Las plantillas y el JS
+  consumen estas rutas.
 """
 import json
 import os
@@ -48,8 +47,7 @@ MENU = [
 PERMISOS = {m[0]: m[4] for m in MENU}
 ROL_ETIQUETA = {"Administrador": "Administrador", "Encargado": "Encargado de inventario", "Vendedor": "Vendedor"}
 
-# ------------------------------------------------------- datos en memoria (demo)
-# TODO(persistencia): reemplazar por data/productos.json, proveedores.json, movimientos.json
+# ------------------------------------------------------- datos iniciales por defecto
 CATEGORIAS = [
     {"id": 1, "nombre": "Aseo", "descripcion": "Productos para limpieza del hogar", "activo": True},
     {"id": 2, "nombre": "Lácteos", "descripcion": "Leche y productos derivados", "activo": True},
@@ -86,9 +84,6 @@ ENTRADAS = [
 ]
 
 
-# ------------------------------------------------------------ persistencia JSON
-# Cada lista de arriba se guarda en un archivo de data/. Si el archivo no existe,
-# se crea con los datos de ejemplo. Después de cada cambio se reescribe (atómico).
 _DATA_DIR = None
 def _prod_a_acta(p):
     """Formato de disco = esquema del ACUERDO_MVP (sección 7): codigo_unico, existencia_minima, proveedor_id, lotes."""
@@ -106,7 +101,7 @@ def _prod_de_acta(d):
     return p
 
 
-# archivo -> (lista en memoria, conversión a disco, conversión desde disco)
+
 _ARCHIVOS = {
     "categorias.json": (CATEGORIAS, None, None),
     "inventario.json": (PRODUCTOS, _prod_a_acta, _prod_de_acta),   # productos + lotes (acta §7)
@@ -346,8 +341,7 @@ def registrar_vistas(app, get_user, normalize_role):
         recientes = sorted(_ventas(), key=lambda v: v["codigo"], reverse=True)[:15]
         return render_template("ventas.html", productos=prods, ventas=recientes)
 
-    # --------------------------------------------------- API demo (catálogos)
-    # TODO(persistencia): leer/escribir data/*.json en lugar de las listas en memoria.
+    # --------------------------------------------------- API (catálogos)
     @bp.post("/api/categorias")
     @api("productos")
     def cat_crear():
@@ -444,7 +438,7 @@ def registrar_vistas(app, get_user, normalize_role):
         _guardar_todo()
         return jsonify(producto=p)
 
-    # ------------------------------------------------- API demo (proveedores)
+    # ------------------------------------------------- API (proveedores)
     def _validar_proveedor(b, actual=None):
         numero, nombre = str(b.get("numero_id", "")).strip(), str(b.get("nombre", "")).strip()
         if not numero or not nombre:
@@ -546,7 +540,7 @@ def registrar_vistas(app, get_user, normalize_role):
         _guardar_todo()
         return jsonify(venta=venta), 201
 
-    # ----------------------------------------------------- API demo (entradas)
+    # ----------------------------------------------------- API (entradas)
     @bp.post("/api/entradas")
     @api("entradas")
     def entrada_crear():
