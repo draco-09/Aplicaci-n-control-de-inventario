@@ -5,6 +5,9 @@ Este repositorio contiene el Producto Mínimo Viable (MVP) para la gestión y co
 
 El sistema sigue una arquitectura **MPA (Multi-Page Application)** basada en **Python con Flask**, utilizando **archivos JSON** como mecanismo de persistencia local.
 
+Se hizo un domino de prueba para la visualización del proyecto desarrollado para que puedan testiar el proyecto 
+https://draco09.pythonanywhere.com
+
 ---
 
 ## Arquitectura de Carpetas del Proyecto
