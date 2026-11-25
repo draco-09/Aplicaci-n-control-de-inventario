@@ -86,7 +86,7 @@ La interfaz visual del sistema respeta estrictamente los códigos de diseño aco
    ```
 3. **Instalar dependencias necesarias:**
    ```bash
-   pip install flask
+   pip install -r requirements.txt
    ```
 4. **Ejecutar el servidor local:**
    ```bash
@@ -99,7 +99,7 @@ La interfaz visual del sistema respeta estrictamente los códigos de diseño aco
 
 El backend expone rutas JSON para autenticación y administración de usuarios. El archivo `data/usuarios.json` se crea automáticamente si no existe. En una instalación nueva, crea el primer administrador con `POST /usuarios`; ese alta inicial es la única operación de usuarios permitida sin sesión. Después, solo un administrador autenticado puede gestionar usuarios.
 
-Para restablecer el archivo local con un único administrador inicial, ejecuta `python app.py --init-admin`. Este comando reemplaza `data/usuarios.json` atómicamente y crea `admin@supermercado.com` con la contraseña inicial `admin123`; úsala solo para inicializar o restablecer datos de desarrollo. Después, ejecuta `python app.py` para iniciar el servidor.
+El comando `python app.py --init-admin` reemplaza `data/usuarios.json` por un único administrador inicial. Es únicamente para restablecer datos locales de desarrollo: no lo ejecutes en Render ni lo uses como comando de inicio, ya que reemplazaría los usuarios existentes.
 
 Como alternativa, para crear el primer administrador desde la aplicación sin borrar datos, envía JSON con los campos `correo`, `contrasena` y `rol`:
 
@@ -126,6 +126,23 @@ La contraseña se guarda con hash. Se aceptan los roles `Administrador`, `Encarg
 Las rutas de sesión aceptan y devuelven JSON; el navegador conserva la sesión mediante una cookie. Todas las respuestas de usuario omiten la contraseña. La aplicación impide desactivar, degradar o eliminar al último administrador activo.
 
 Define `FLASK_SECRET_KEY` con un valor secreto estable antes de ejecutar el servidor si necesitas conservar sesiones entre reinicios. En desarrollo local, si no se define, se genera una clave aleatoria al iniciar la aplicación.
+
+## Despliegue público en Render
+
+La aplicación se sirve con Gunicorn mediante el `Procfile`; no uses `python app.py` como proceso de producción.
+
+1. Instala Flask y Gunicorn localmente (si aún no lo hiciste):
+   ```bash
+   pip install -r requirements.txt
+   ```
+2. En Render, conecta tu repositorio de GitHub y crea un **Web Service**.
+3. Configura los comandos del servicio:
+   - **Build Command:** `pip install -r requirements.txt`
+   - **Start Command:** `gunicorn app:app`
+4. En **Environment**, agrega `FLASK_SECRET_KEY` con un valor largo, aleatorio y secreto. Genéralo o introdúcelo en Render; no lo guardes en este repositorio.
+5. Despliega el servicio y abre la URL pública terminada en `onrender.com`.
+
+Los datos de la aplicación continúan guardándose en archivos JSON bajo `data/`. Esta configuración no añade almacenamiento persistente: Render no garantiza que esos archivos se conserven después de reinicios o nuevos despliegues. No ejecutes `python app.py --init-admin` como comando de inicio; el comando reemplaza el archivo de usuarios existente.
 
 ### Front-end (vistas MPA)
 
