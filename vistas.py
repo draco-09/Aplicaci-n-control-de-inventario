@@ -37,10 +37,10 @@ _ICONOS = {
 MENU = [
     ("panel", "Panel principal", "vistas.panel", "panel", {"Administrador", "Encargado", "Vendedor"}, "", ""),
     ("usuarios", "Usuarios y roles", "vistas.usuarios", "usuarios", {"Administrador"}, "Administra cuentas y permisos.", "Ver usuarios"),
-    ("productos", "Productos y categorías", "vistas.productos", "productos", {"Encargado"}, "Mantén el catálogo organizado.", "Ver productos"),
-    ("proveedores", "Proveedores", "vistas.proveedores", "proveedores", {"Encargado"}, "Consulta y registra proveedores.", "Ver proveedores"),
-    ("entradas", "Entradas", "vistas.entradas", "entradas", {"Encargado"}, "Registra productos recibidos por lote.", "Ver entradas"),
-    ("ventas", "Ventas", "vistas.ventas", "ventas", {"Vendedor"}, "Registra ventas con lotes disponibles.", "Ver ventas"),
+    ("productos", "Productos y categorías", "vistas.productos", "productos", {"Encargado", "Administrador"}, "Mantén el catálogo organizado.", "Ver productos"),
+    ("proveedores", "Proveedores", "vistas.proveedores", "proveedores", {"Encargado", "Administrador"}, "Consulta y registra proveedores.", "Ver proveedores"),
+    ("entradas", "Entradas", "vistas.entradas", "entradas", {"Encargado", "Administrador"}, "Registra productos recibidos por lote.", "Ver entradas"),
+    ("ventas", "Ventas", "vistas.ventas", "ventas", {"Vendedor", "Administrador"}, "Registra ventas con lotes disponibles.", "Ver ventas"),
     ("existencias", "Existencias", "vistas.existencias", "existencias", {"Administrador", "Encargado", "Vendedor"}, "Consulta saldos y disponibilidad por lote.", "Ver existencias"),
     ("alertas", "Alertas", "vistas.alertas", "alertas", {"Administrador", "Encargado"}, "Revisa vencimientos y existencias mínimas.", "Consultar alertas"),
 ]
